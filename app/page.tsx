@@ -1,65 +1,115 @@
-import Image from "next/image";
+"use client";
+import React, { useState, useRef } from 'react';
+import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 
-export default function Home() {
+const StationPoint = ({ imgSrc, name, km }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: false, amount: 0.5 });
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 50, scale: 0.8 }}
+      animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.8 }}
+      transition={{ type: "spring", stiffness: 100 }}
+      className="flex flex-col items-center my-32 w-full"
+    >
+      <img src={imgSrc} alt={name} className="w-56 h-56 object-contain mb-8" />
+      <div className="bg-[#00C2CB] text-white px-10 py-4 rounded-full font-bold shadow-xl text-xl">
+        {km} - {name}
+      </div>
+    </motion.div>
+  );
+};
+
+export default function GreenSMGamification() {
+  const containerRef = useRef(null);
+  const [km] = useState(12);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end end']
+  });
+
+  const phoneScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.4]);
+  const phoneRotateY = useTransform(scrollYProgress, [0, 0.5], [0, 360]);
+
+  return (
+    <div ref={containerRef} className="bg-white text-zinc-900 font-sans overflow-x-hidden min-h-[400vh]">
+      
+      <div className="fixed inset-0 z-0 opacity-20">
+        <img src="/road.png" alt="Road" className="w-full h-full object-cover" />
+      </div>
+
+      <nav className="fixed w-full z-50 p-6 flex justify-between items-center backdrop-blur-md bg-white/80 border-b border-zinc-200">
+        <div className="flex items-center gap-3">
+          <img src="/logo.png" alt="Logo" className="h-8 w-auto" />
+          <h1 className="text-xl font-black tracking-tighter text-[#00C2CB]">
+            GREEN <span className="text-zinc-900">SM</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="space-x-8 text-xs font-semibold uppercase tracking-widest text-zinc-500">
+          <a href="#" className="hover:text-[#00C2CB]">Thông tin</a>
+          <a href="#" className="hover:text-[#00C2CB]">Đăng nhập</a>
+          <a href="#" className="hover:text-[#00C2CB]">Kho quà</a>
         </div>
-      </main>
+      </nav>
+
+      <section className="relative z-10 h-screen flex flex-col items-center justify-center pt-20">
+        <h1 className="text-center uppercase tracking-tight mb-10 text-zinc-900 leading-none">
+          <span className="block text-8xl font-black">GOM KILÔMÉT</span>
+          <span className="block text-[4rem] font-bold text-[#00C2CB] mt-4">ĐỔI QUÀ</span>
+        </h1>
+        <motion.div 
+          style={{ scale: phoneScale, rotateY: phoneRotateY }}
+          className="w-[260px] h-[500px] rounded-[3rem] border-4 border-zinc-200 bg-white shadow-2xl flex flex-col items-center justify-center overflow-hidden"
+        >
+          <img src="/app-xanh.png" alt="Giao diện App Xanh SM" className="w-full h-full object-cover" />
+        </motion.div>
+      </section>
+
+      <section className="relative z-10 py-32 flex flex-col items-center">
+        <StationPoint imgSrc="/carcharging.png" name="Mầm Xanh" km="10 KM" />
+        <StationPoint imgSrc="/carcharging.png" name="Cây Lớn" km="30 KM" />
+        <StationPoint imgSrc="/carcharging.png" name="Về Đích" km="50 KM" />
+      </section>
+
+      <section className="relative z-10 max-w-3xl mx-auto p-12 bg-zinc-100 rounded-[3rem] mb-20 shadow-xl border border-zinc-200">
+        <header className="flex justify-between items-center mb-12">
+          <div>
+            <h2 className="text-sm text-[#00C2CB] uppercase tracking-widest font-bold">Tài khoản Xanh</h2>
+            <h1 className="text-3xl font-bold text-zinc-900">Gom Kilômét - Đổi Quà</h1>
+          </div>
+          <div className="bg-white px-6 py-3 rounded-full border border-zinc-200">
+            <span className="text-[#00C2CB] font-bold text-lg">{km} KM XANH</span>
+          </div>
+        </header>
+
+        <div className="bg-white p-10 rounded-3xl text-center mb-10 border border-zinc-200">
+          <div className="text-7xl mb-6">🌳</div>
+          <h3 className="text-2xl font-bold text-zinc-900">Cây Mầm Xanh</h3>
+          <div className="w-full bg-zinc-100 h-4 rounded-full overflow-hidden mt-6">
+            <div className="bg-[#00C2CB] h-full w-[60%]"></div>
+          </div>
+        </div>
+
+        <h3 className="text-2xl font-bold mb-6 text-zinc-900">Kho Quà Chiến Lược</h3>
+        <div className="grid grid-cols-2 gap-6">
+          <button className="bg-white p-8 rounded-3xl border border-zinc-200 hover:border-[#00C2CB] transition">
+            <p className="font-bold text-lg text-zinc-900">Voucher 20%</p>
+            <p className="text-sm text-zinc-500 mt-2">Giá: 10 KM</p>
+          </button>
+          <button className="bg-[#00C2CB] p-8 rounded-3xl text-white font-bold text-lg hover:opacity-90 transition">
+            Đổi Mũ Bảo Hiểm (50 KM)
+          </button>
+        </div>
+      </section>
+
+      <footer className="relative z-10 text-center pb-20 opacity-50">
+        <p className="text-md font-semibold tracking-wide text-zinc-900">
+            GREEN SM - DI CHUYỂN THÔNG MINH, VĂN MINH TRÊN MỌI HÀNH TRÌNH
+        </p>
+      </footer>
     </div>
   );
 }
