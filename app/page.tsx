@@ -2,7 +2,7 @@
 import React, { useState, useRef } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 
-const StationPoint = ({ imgSrc, name, km }) => {
+const StationPoint = ({ imgSrc, name, km }: any) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false, amount: 0.5 });
 
